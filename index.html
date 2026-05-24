@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wayne Currie - Network Engineer</title>
   <meta name="description" content="Network Engineer - Kingston, Jamaica. Enterprise routing, switching, firewalls, VoIP, wireless.">
+  <meta name="theme-color" content="#0a0e14" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#fafaf7" media="(prefers-color-scheme: light)">
   <meta property="og:title" content="Wayne Currie - Network Engineer">
   <meta property="og:description" content="Enterprise network engineer - routing, switching, firewalls, VoIP, wireless.">
   <meta property="og:type" content="website">
@@ -14,8 +16,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
+  <script>
+    // Apply theme before page paint to avoid flash
+    (function() {
+      const stored = localStorage.getItem('theme');
+      const prefers = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', stored || prefers);
+    })();
+  </script>
+
   <style>
-    :root {
+    /* THEME TOKENS */
+    :root[data-theme="dark"] {
       --bg:         #0a0e14;
       --bg-soft:    #0f141c;
       --bg-card:    #121822;
@@ -30,91 +42,206 @@
       --accent-bd:  rgba(0,217,255,0.22);
       --green:      #00ff88;
       --amber:      #ffb84d;
+      --shadow-1:   0 4px 16px rgba(0,0,0,0.4);
+      --grid-line:  rgba(0,217,255,0.025);
+      --nav-bg:     rgba(10,14,20,0.78);
+      --code-bg:    #060a10;
+    }
+    :root[data-theme="light"] {
+      --bg:         #fafaf7;
+      --bg-soft:    #f3f2ec;
+      --bg-card:    #ffffff;
+      --bg-elev:    #f6f5ef;
+      --border:     #e3e0d6;
+      --border-soft:#cfcbbe;
+      --text:       #1a1d22;
+      --text-soft:  #525864;
+      --text-mute:  #8a8f99;
+      --accent:     #0099bb;
+      --accent-dim: rgba(0,153,187,0.08);
+      --accent-bd:  rgba(0,153,187,0.28);
+      --green:      #00a86b;
+      --amber:      #c97500;
+      --shadow-1:   0 4px 16px rgba(40,40,40,0.08);
+      --grid-line:  rgba(0,153,187,0.04);
+      --nav-bg:     rgba(250,250,247,0.82);
+      --code-bg:    #f3f2ec;
+    }
+    :root {
       --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
       --max: 1180px;
     }
+
     * { margin:0; padding:0; box-sizing:border-box; }
     html { scroll-behavior:smooth; }
     body {
-      background: var(--bg); color: var(--text);
-      font-family: var(--sans); font-size: 16px; line-height: 1.6;
-      -webkit-font-smoothing: antialiased; overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
     body::before {
       content:''; position: fixed; inset: 0; pointer-events: none;
       background-image:
-        linear-gradient(rgba(0,217,255,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,217,255,0.02) 1px, transparent 1px);
-      background-size: 56px 56px; z-index: 0;
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 56px 56px;
+      z-index: 0;
     }
-    .container { max-width: var(--max); margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+    .container {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 28px;
+      position: relative;
+      z-index: 1;
+    }
+    @media (max-width: 600px) { .container { padding: 0 20px; } }
 
+    /* NAV */
     nav.topbar {
       position: fixed; top: 0; left: 0; right: 0; z-index: 50;
-      backdrop-filter: blur(12px); background: rgba(10,14,20,0.78);
-      border-bottom: 1px solid transparent; transition: border-color 0.3s ease;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: var(--nav-bg);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s ease, background-color 0.3s ease;
     }
     nav.topbar.scrolled { border-bottom-color: var(--border); }
     nav.topbar .container {
       display: flex; justify-content: space-between; align-items: center;
-      padding-top: 16px; padding-bottom: 16px;
+      padding-top: 14px; padding-bottom: 14px;
     }
     .brand {
       display: flex; align-items: center; gap: 10px;
       font-family: var(--mono); font-size: 14px; font-weight: 500;
+      color: var(--text);
     }
     .brand-dot { width: 9px; height: 9px; background: var(--accent); border-radius: 2px; }
     .brand .path { color: var(--text-mute); }
-    .nav-links { display: flex; gap: 26px; list-style: none; }
+    .nav-right {
+      display: flex; align-items: center; gap: 22px;
+    }
+    .nav-links { display: flex; gap: 22px; list-style: none; }
     .nav-links a {
       font-family: var(--mono); font-size: 13px;
-      color: var(--text-soft); text-decoration: none; transition: color 0.2s ease;
+      color: var(--text-soft); text-decoration: none;
+      transition: color 0.2s ease;
     }
     .nav-links a:hover { color: var(--accent); }
-    @media (max-width: 760px) { .nav-links { display: none; } }
+
+    /* THEME TOGGLE */
+    .theme-toggle {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid var(--border-soft);
+      color: var(--text-soft);
+      cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease;
+      padding: 0;
+    }
+    .theme-toggle:hover {
+      color: var(--accent);
+      border-color: var(--accent-bd);
+      background: var(--accent-dim);
+    }
+    .theme-toggle svg { width: 16px; height: 16px; }
+    .theme-toggle .sun-icon { display: none; }
+    .theme-toggle .moon-icon { display: block; }
+    [data-theme="light"] .theme-toggle .sun-icon { display: block; }
+    [data-theme="light"] .theme-toggle .moon-icon { display: none; }
+
+    /* MOBILE NAV */
+    .mobile-menu-toggle {
+      display: none;
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid var(--border-soft);
+      color: var(--text-soft);
+      cursor: pointer;
+      align-items: center; justify-content: center;
+      transition: all 0.2s ease;
+      padding: 0;
+    }
+    .mobile-menu-toggle:hover { color: var(--accent); border-color: var(--accent-bd); }
+    .mobile-menu-toggle svg { width: 18px; height: 18px; }
+    .mobile-menu-toggle .close-icon { display: none; }
+    body.menu-open .mobile-menu-toggle .menu-icon { display: none; }
+    body.menu-open .mobile-menu-toggle .close-icon { display: block; }
+
+    @media (max-width: 760px) {
+      .nav-links {
+        position: fixed;
+        top: 62px; left: 0; right: 0;
+        flex-direction: column;
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
+        gap: 0;
+        padding: 8px 0;
+        transform: translateY(-110%);
+        transition: transform 0.3s ease;
+        z-index: 40;
+      }
+      body.menu-open .nav-links { transform: translateY(0); }
+      .nav-links li { border-bottom: 1px solid var(--border); }
+      .nav-links li:last-child { border-bottom: none; }
+      .nav-links a {
+        display: block;
+        padding: 14px 28px;
+        font-size: 14px;
+      }
+      .mobile-menu-toggle { display: inline-flex; }
+    }
 
     /* HERO */
     #hero {
       min-height: 100vh; display: flex; align-items: center;
-      padding: 90px 0 60px; position: relative;
+      padding: 100px 0 60px; position: relative;
     }
-    .hero-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 50px; align-items: center; }
+    .hero-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; align-items: center; }
     @media (max-width: 900px) {
-      .hero-grid { grid-template-columns: 1fr; gap: 50px; }
-      .hero-topology { order: -1; }
+      .hero-grid { grid-template-columns: 1fr; gap: 36px; }
+      .hero-topology { order: -1; max-width: 440px; margin: 0 auto; width: 100%; }
     }
     .hero-cmd { font-family: var(--mono); font-size: 13px; margin-bottom: 22px; }
     .hero-cmd .prompt { color: var(--text-mute); }
     .hero-cmd .cmd { color: var(--accent); }
     .hero-cmd .out { color: var(--text-soft); display: block; margin-top: 4px; }
     h1.hero-title {
-      font-size: clamp(2.4rem, 5.2vw, 4.2rem);
+      font-size: clamp(2.2rem, 5.2vw, 4.2rem);
       line-height: 1.05; font-weight: 700;
       letter-spacing: -0.035em; margin-bottom: 14px;
     }
     h1.hero-title .role {
       display: block; color: var(--accent);
-      font-family: var(--mono); font-size: clamp(1.1rem, 2.3vw, 1.6rem);
+      font-family: var(--mono); font-size: clamp(1rem, 2.3vw, 1.6rem);
       font-weight: 500; letter-spacing: -0.01em; margin-top: 6px;
     }
     .hero-sub {
-      font-size: 17px; color: var(--text-soft);
-      max-width: 520px; margin-bottom: 32px; line-height: 1.6;
+      font-size: clamp(15px, 1.4vw, 17px);
+      color: var(--text-soft);
+      max-width: 520px; margin-bottom: 28px; line-height: 1.6;
     }
-    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 36px; }
+    .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 32px; }
     .btn {
       font-family: var(--mono); font-size: 13px;
       padding: 11px 20px; border-radius: 6px; text-decoration: none;
       display: inline-flex; align-items: center; gap: 8px;
       transition: all 0.2s ease; cursor: pointer; border: none;
     }
-    .btn-primary { background: var(--accent); color: #0a0a0a; font-weight: 600; }
-    .btn-primary:hover { background: #fff; }
+    .btn-primary { background: var(--accent); color: var(--bg); font-weight: 600; }
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
     .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border-soft); }
     .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
     .hero-stats {
-      display: flex; gap: 28px; padding-top: 22px;
+      display: flex; gap: clamp(18px, 3vw, 28px); padding-top: 22px;
       border-top: 1px solid var(--border);
       font-family: var(--mono); font-size: 12px; flex-wrap: wrap;
     }
@@ -133,7 +260,8 @@
     .hero-topology {
       width: 100%; aspect-ratio: 1 / 0.85;
       background: var(--bg-soft); border: 1px solid var(--border);
-      border-radius: 10px; padding: 18px; position: relative; overflow: hidden;
+      border-radius: 12px; padding: 16px; position: relative; overflow: hidden;
+      box-shadow: var(--shadow-1);
     }
     .topo-header {
       display: flex; justify-content: space-between; align-items: center;
@@ -162,10 +290,18 @@
       0%, 90%, 100% { opacity: 0.3; }
       45%, 55%      { opacity: 1; }
     }
-    .packet { fill: var(--accent); filter: drop-shadow(0 0 4px var(--accent)); }
+    .packet {
+      fill: var(--accent);
+      filter: drop-shadow(0 0 4px var(--accent));
+    }
 
-    section.block { padding: 90px 0; border-top: 1px solid var(--border); position: relative; }
-    .section-head { margin-bottom: 44px; }
+    /* SECTION */
+    section.block {
+      padding: clamp(60px, 8vw, 90px) 0;
+      border-top: 1px solid var(--border);
+      position: relative;
+    }
+    .section-head { margin-bottom: clamp(32px, 4vw, 44px); }
     .section-eyebrow {
       font-family: var(--mono); font-size: 12px;
       color: var(--accent); letter-spacing: 0.15em;
@@ -174,55 +310,50 @@
     }
     .section-eyebrow::before { content: '//'; color: var(--text-mute); }
     h2.section-title {
-      font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+      font-size: clamp(1.7rem, 3.5vw, 2.4rem);
       font-weight: 700; letter-spacing: -0.03em; line-height: 1.1;
     }
 
     /* SNAPSHOT */
-    .snapshot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .snapshot-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+    }
     @media (max-width: 800px) { .snapshot-grid { grid-template-columns: 1fr; } }
     .snap {
       background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 8px; padding: 22px 24px;
-      transition: border-color 0.2s ease;
+      border-radius: 10px; padding: 20px 22px;
+      transition: border-color 0.2s ease, transform 0.2s ease;
     }
-    .snap:hover { border-color: var(--accent-bd); }
+    .snap:hover { border-color: var(--accent-bd); transform: translateY(-2px); }
     .snap-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
     .snap-icon {
-      width: 32px; height: 32px; border-radius: 6px;
+      width: 32px; height: 32px; border-radius: 8px;
       background: var(--accent-dim); border: 1px solid var(--accent-bd);
       display: flex; align-items: center; justify-content: center; color: var(--accent);
     }
     .snap-icon svg { width: 16px; height: 16px; }
-    .snap h3 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+    .snap h3 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; color: var(--text); }
     .snap-list {
       list-style: none; font-family: var(--mono); font-size: 12px;
-      color: var(--text-soft); line-height: 1.85;
+      color: var(--text-soft); line-height: 1.9;
     }
-    .snap-list li::before { content: '▸ '; color: var(--accent); }
+    .snap-list li::before { content: '> '; color: var(--accent); }
 
-    /* LABS - COMPACT 2-COL */
+    /* LABS */
     .labs-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
     }
     @media (max-width: 800px) { .labs-grid { grid-template-columns: 1fr; } }
     .lab {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0;
-      transition: border-color 0.2s ease;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 0;
+      transition: border-color 0.2s ease, transform 0.2s ease;
       overflow: hidden;
     }
     .lab:hover { border-color: var(--accent-bd); }
     .lab.open { border-color: var(--accent-bd); }
     .lab-summary {
-      padding: 20px 22px;
-      cursor: pointer;
-      list-style: none;
-      display: block;
+      padding: 20px 22px; cursor: pointer; list-style: none; display: block;
     }
     .lab-summary::-webkit-details-marker { display: none; }
     .lab-summary::marker { display: none; }
@@ -235,41 +366,39 @@
       color: var(--text-mute); letter-spacing: 0.12em;
     }
     .lab-toggle {
-      width: 24px; height: 24px;
-      border-radius: 4px;
+      width: 26px; height: 26px;
+      border-radius: 6px;
       border: 1px solid var(--border-soft);
       display: flex; align-items: center; justify-content: center;
       color: var(--text-mute);
-      transition: all 0.2s ease;
+      transition: all 0.25s ease;
       flex-shrink: 0;
-    }
-    .lab.open .lab-toggle {
-      border-color: var(--accent); color: var(--accent);
-      transform: rotate(45deg);
-    }
-    .lab-toggle::before {
-      content: '+';
       font-family: var(--mono);
       font-size: 16px;
       line-height: 1;
     }
+    .lab.open .lab-toggle {
+      border-color: var(--accent); color: var(--accent);
+      transform: rotate(45deg);
+      background: var(--accent-dim);
+    }
+    .lab-toggle::before { content: '+'; }
     .lab h3 {
       font-size: 17px; font-weight: 600;
-      letter-spacing: -0.01em; line-height: 1.25;
+      letter-spacing: -0.01em; line-height: 1.3;
       margin-bottom: 10px;
+      color: var(--text);
     }
     .lab-tagline {
       font-size: 13px; color: var(--text-soft);
-      line-height: 1.5; margin-bottom: 14px;
+      line-height: 1.55; margin-bottom: 14px;
     }
-    .lab-tech-mini {
-      display: flex; flex-wrap: wrap; gap: 5px;
-    }
+    .lab-tech-mini { display: flex; flex-wrap: wrap; gap: 5px; }
     .lab-tech-mini .t {
       font-family: var(--mono); font-size: 10px;
-      padding: 2px 7px; background: var(--bg-elev);
+      padding: 3px 8px; background: var(--bg-elev);
       border: 1px solid var(--border-soft);
-      color: var(--text-soft); border-radius: 3px;
+      color: var(--text-soft); border-radius: 4px;
     }
     .lab-detail {
       padding: 0 22px 22px;
@@ -287,49 +416,31 @@
       margin-top: 18px; margin-bottom: 8px;
     }
     .lab-detail p {
-      font-size: 13px; color: var(--text-soft);
-      line-height: 1.6;
+      font-size: 13.5px; color: var(--text-soft);
+      line-height: 1.65;
     }
-    .lab-detail ul {
-      list-style: none; font-size: 13px;
-      color: var(--text-soft); line-height: 1.7;
+    .lab-detail code {
+      font-family: var(--mono); font-size: 12px;
+      padding: 1px 6px;
+      background: var(--bg-soft);
+      border: 1px solid var(--border-soft);
+      border-radius: 3px;
+      color: var(--accent);
     }
-    .lab-detail ul li {
-      padding-left: 14px; position: relative; margin-bottom: 3px;
-    }
-    .lab-detail ul li::before {
-      content: '›'; position: absolute; left: 0; top: 0; color: var(--accent);
-    }
-    .lab-topology {
-      margin-top: 14px;
-      background: var(--bg-soft); border: 1px solid var(--border-soft);
-      border-radius: 6px; padding: 16px;
-    }
-    .lab-topology svg { width: 100%; height: auto; max-height: 200px; display: block; }
-    .lab-config {
-      background: #060a10; border: 1px solid var(--border-soft);
-      border-radius: 6px; padding: 14px 16px; margin-top: 12px;
-      font-family: var(--mono); font-size: 11.5px;
-      color: var(--text-soft); line-height: 1.65;
-      overflow-x: auto;
-    }
-    .lab-config .c { color: var(--accent); }
-    .lab-config .k { color: var(--amber); }
-    .lab-config .n { color: var(--green); }
-    .lab-config .m { color: var(--text-mute); }
-    .lab-config pre { font-family: inherit; white-space: pre; margin: 0; }
 
-    /* ROADMAP */
+    /* QUALIFICATIONS */
     .roadmap {
-      display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
     }
     @media (max-width: 1000px) { .roadmap { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 700px)  { .roadmap { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 480px)  { .roadmap { grid-template-columns: 1fr; } }
     .road-step {
       background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 8px; padding: 20px; position: relative;
+      border-radius: 10px; padding: 18px; position: relative;
+      transition: transform 0.2s ease, border-color 0.2s ease;
     }
+    .road-step:hover { transform: translateY(-2px); border-color: var(--accent-bd); }
     .road-step.done   { border-left: 3px solid var(--green); }
     .road-step.wip    { border-left: 3px solid var(--amber); }
     .road-step.next   { border-left: 3px solid var(--accent); }
@@ -342,13 +453,12 @@
     .road-step.wip    .status { color: var(--amber); }
     .road-step.next   .status { color: var(--accent); }
     .road-step.future .status { color: var(--text-mute); }
-    .road-step .name { font-size: 15px; font-weight: 600; margin-bottom: 4px; line-height: 1.2; }
+    .road-step .name { font-size: 15px; font-weight: 600; margin-bottom: 4px; line-height: 1.25; color: var(--text); }
     .road-step .desc { font-family: var(--mono); font-size: 11px; color: var(--text-mute); }
 
-    /* TECH STACK - LOGO GRID */
-    .stack-block {
-      margin-bottom: 36px;
-    }
+    /* TECH STACK */
+    .stack-block { margin-bottom: 32px; }
+    .stack-block:last-child { margin-bottom: 0; }
     .stack-block h3 {
       font-family: var(--mono);
       font-size: 11px;
@@ -361,13 +471,13 @@
     }
     .logo-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
     }
     .logo-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 10px;
       padding: 22px 14px;
       display: flex;
       flex-direction: column;
@@ -375,21 +485,23 @@
       justify-content: center;
       gap: 10px;
       transition: all 0.2s ease;
-      min-height: 100px;
+      min-height: 110px;
       text-align: center;
     }
     .logo-card:hover {
       border-color: var(--accent-bd);
       transform: translateY(-2px);
+      box-shadow: var(--shadow-1);
     }
     .logo-card svg {
       height: 28px;
       width: auto;
       max-width: 100px;
       fill: var(--text-soft);
-      transition: fill 0.2s ease;
+      color: var(--text-soft);
+      transition: fill 0.2s ease, color 0.2s ease;
     }
-    .logo-card:hover svg { fill: var(--accent); }
+    .logo-card:hover svg { fill: var(--accent); color: var(--accent); }
     .logo-card .logo-text {
       font-weight: 700;
       font-size: 16px;
@@ -409,85 +521,76 @@
     /* ABOUT */
     .about-wrap { max-width: 720px; }
     .about-wrap p {
-      font-size: 18px; color: var(--text-soft); line-height: 1.7;
+      font-size: clamp(16px, 1.4vw, 18px);
+      color: var(--text-soft);
+      line-height: 1.7;
     }
-    .about-wrap p strong { color: var(--text); font-weight: 500; }
+    .about-wrap p strong { color: var(--text); font-weight: 600; }
 
     /* CONTACT */
     .contact-grid {
       display: grid; grid-template-columns: 1fr 1fr;
       gap: 50px; align-items: start;
     }
-    @media (max-width: 800px) { .contact-grid { grid-template-columns: 1fr; gap: 40px; } }
+    @media (max-width: 800px) { .contact-grid { grid-template-columns: 1fr; gap: 32px; } }
     .contact-blurb {
-      font-size: 17px; color: var(--text-soft);
-      line-height: 1.7; margin-bottom: 28px;
+      font-size: clamp(15px, 1.4vw, 17px);
+      color: var(--text-soft);
+      line-height: 1.7;
+      margin-bottom: 28px;
     }
     .contact-info { list-style: none; padding: 0; }
     .contact-info li {
       display: flex; justify-content: space-between;
       padding: 14px 0; border-bottom: 1px solid var(--border);
       font-size: 14px;
+      gap: 12px;
     }
     .contact-info .k {
       font-family: var(--mono); font-size: 12px;
       color: var(--text-mute);
       letter-spacing: 0.08em; text-transform: uppercase;
+      flex-shrink: 0;
     }
     .contact-info .v, .contact-info .v a {
       color: var(--text); text-decoration: none; font-weight: 500;
+      text-align: right;
+      word-break: break-word;
     }
     .contact-info .v a:hover { color: var(--accent); }
     .social-row { display: flex; gap: 10px; margin-top: 28px; }
     .social {
-      width: 40px; height: 40px; border-radius: 6px;
+      width: 44px; height: 44px; border-radius: 10px;
       background: var(--bg-card); border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
       color: var(--text-soft); text-decoration: none;
       transition: all 0.2s ease;
     }
-    .social:hover { color: var(--accent); border-color: var(--accent-bd); transform: translateY(-2px); }
+    .social:hover {
+      color: var(--accent); border-color: var(--accent-bd);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-1);
+    }
     .social svg { width: 18px; height: 18px; }
 
+    /* FOOTER */
     footer {
       border-top: 1px solid var(--border);
       padding: 26px 0; font-family: var(--mono);
       font-size: 11px; color: var(--text-mute); letter-spacing: 0.05em;
     }
-    footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    footer .container {
+      display: flex; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+    @media (max-width: 600px) { footer .container { justify-content: flex-start; flex-direction: column; gap: 6px; } }
     footer .l span { color: var(--accent); }
 
-    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-
-    .ld-rect { fill: var(--bg-elev); stroke: var(--accent); stroke-width: 1.5; }
-    .ld-rect-mute { fill: var(--bg-elev); stroke: var(--border-soft); stroke-width: 1.5; }
-    .ld-link { stroke: var(--accent); stroke-width: 1.5; fill: none; opacity: 0.7; }
-    .ld-link-dash { stroke: var(--accent); stroke-width: 1.5; fill: none; stroke-dasharray: 4 3; opacity: 0.6; }
-    .ld-label {
-      fill: var(--text-soft); font-family: 'JetBrains Mono', monospace;
-      font-size: 10px; text-anchor: middle;
-    }
-    .ld-label-sm {
-      fill: var(--text-mute); font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-    }
-
-    .lab-detail code {
-      font-family: var(--mono);
-      font-size: 12px;
-      padding: 1px 6px;
-      background: var(--bg-soft);
-      border: 1px solid var(--border-soft);
-      border-radius: 3px;
-      color: var(--accent);
-    }
-
-    /* BACK-TO-TOP BUTTON */
+    /* BACK-TO-TOP */
     .back-to-top {
       position: fixed;
-      bottom: 28px;
-      right: 28px;
+      bottom: 24px;
+      right: 24px;
       width: 46px;
       height: 46px;
       border-radius: 50%;
@@ -502,8 +605,9 @@
       opacity: 0;
       visibility: hidden;
       transform: translateY(16px);
-      transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease, border-color 0.2s ease;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,217,255,0.08);
+      transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease, color 0.2s ease;
+      box-shadow: var(--shadow-1);
+      padding: 0;
     }
     .back-to-top.visible {
       opacity: 1;
@@ -512,41 +616,57 @@
     }
     .back-to-top:hover {
       background: var(--accent);
-      border-color: var(--accent);
       color: var(--bg);
     }
-    .back-to-top svg {
-      width: 18px;
-      height: 18px;
-    }
+    .back-to-top svg { width: 18px; height: 18px; }
     @media (max-width: 600px) {
       .back-to-top {
-        bottom: 20px;
-        right: 20px;
-        width: 42px;
-        height: 42px;
+        bottom: 18px; right: 18px;
+        width: 42px; height: 42px;
       }
     }
 
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
     ::selection { background: var(--accent); color: var(--bg); }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
 </head>
 <body>
 
   <nav class="topbar" id="topbar">
     <div class="container">
-      <div class="brand">
+      <a href="#hero" class="brand" style="text-decoration:none;">
         <span class="brand-dot"></span>
         wcurrie<span class="path">/~</span>
+      </a>
+      <div class="nav-right">
+        <ul class="nav-links">
+          <li><a href="#snapshot">./snapshot</a></li>
+          <li><a href="#labs">./labs</a></li>
+          <li><a href="#roadmap">./qualifications</a></li>
+          <li><a href="#stack">./stack</a></li>
+          <li><a href="#about">./about</a></li>
+          <li><a href="#contact">./contact</a></li>
+        </ul>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        </button>
+        <button class="mobile-menu-toggle" id="menuToggle" aria-label="Toggle menu">
+          <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <svg class="close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
-      <ul class="nav-links">
-        <li><a href="#snapshot">./snapshot</a></li>
-        <li><a href="#labs">./labs</a></li>
-        <li><a href="#roadmap">./qualifications</a></li>
-        <li><a href="#stack">./stack</a></li>
-        <li><a href="#about">./about</a></li>
-        <li><a href="#contact">./contact</a></li>
-      </ul>
     </div>
   </nav>
 
@@ -557,7 +677,7 @@
         <div class="hero-text">
           <div class="hero-cmd">
             <span class="prompt">$</span> <span class="cmd">whoami</span>
-            <span class="out">→ network_engineer · kingston_ja</span>
+            <span class="out">-> network_engineer / kingston_ja</span>
           </div>
           <h1 class="hero-title">
             Hi, I'm Wayne.
@@ -567,7 +687,7 @@
             I build, troubleshoot, and secure enterprise networks. Routing, switching, firewalls, VoIP, and wireless. Based in Kingston, Jamaica.
           </p>
           <div class="hero-actions">
-            <a href="#contact" class="btn btn-primary">Get in touch →</a>
+            <a href="#contact" class="btn btn-primary">Get in touch -&gt;</a>
             <a href="#labs" class="btn btn-ghost">View Labs</a>
           </div>
           <div class="hero-stats">
@@ -581,7 +701,7 @@
             </div>
             <div class="item">
               <span class="label">Focus</span>
-              <span class="value">Cisco · Fortinet · Azure</span>
+              <span class="value">Cisco / Fortinet / Azure</span>
             </div>
           </div>
         </div>
@@ -608,55 +728,67 @@
 
             <g class="blink">
               <rect class="topo-node-bg active" x="170" y="40" width="60" height="40" rx="6"/>
-              <circle cx="200" cy="60" r="9" fill="none" stroke="#00d9ff" stroke-width="1.5"/>
-              <path d="M196,57 L200,53 L204,57 M196,63 L200,67 L204,63" stroke="#00d9ff" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+              <circle cx="200" cy="60" r="9" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--accent);"/>
+              <path d="M196,57 L200,53 L204,57 M196,63 L200,67 L204,63" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round" style="color: var(--accent);"/>
             </g>
             <text class="topo-label" x="200" y="98">CORE-RTR-01</text>
 
             <g class="blink-2">
               <rect class="topo-node-bg active" x="70"  y="140" width="60" height="40" rx="6"/>
-              <line x1="84" y1="155" x2="116" y2="155" stroke="#00d9ff" stroke-width="1.4"/>
-              <line x1="84" y1="161" x2="116" y2="161" stroke="#00d9ff" stroke-width="1.4"/>
-              <line x1="84" y1="167" x2="116" y2="167" stroke="#00d9ff" stroke-width="1.4"/>
-              <polygon points="84,155 80,153 80,157" fill="#00d9ff"/>
-              <polygon points="116,161 120,159 120,163" fill="#00d9ff"/>
-              <polygon points="84,167 80,165 80,169" fill="#00d9ff"/>
+              <g style="color: var(--accent);">
+                <line x1="84" y1="155" x2="116" y2="155" stroke="currentColor" stroke-width="1.4"/>
+                <line x1="84" y1="161" x2="116" y2="161" stroke="currentColor" stroke-width="1.4"/>
+                <line x1="84" y1="167" x2="116" y2="167" stroke="currentColor" stroke-width="1.4"/>
+                <polygon points="84,155 80,153 80,157" fill="currentColor"/>
+                <polygon points="116,161 120,159 120,163" fill="currentColor"/>
+                <polygon points="84,167 80,165 80,169" fill="currentColor"/>
+              </g>
             </g>
             <text class="topo-label" x="100" y="198">DIST-SW-01</text>
 
             <g class="blink-3">
               <rect class="topo-node-bg active" x="270" y="140" width="60" height="40" rx="6"/>
-              <line x1="284" y1="155" x2="316" y2="155" stroke="#00d9ff" stroke-width="1.4"/>
-              <line x1="284" y1="161" x2="316" y2="161" stroke="#00d9ff" stroke-width="1.4"/>
-              <line x1="284" y1="167" x2="316" y2="167" stroke="#00d9ff" stroke-width="1.4"/>
-              <polygon points="284,155 280,153 280,157" fill="#00d9ff"/>
-              <polygon points="316,161 320,159 320,163" fill="#00d9ff"/>
-              <polygon points="284,167 280,165 280,169" fill="#00d9ff"/>
+              <g style="color: var(--accent);">
+                <line x1="284" y1="155" x2="316" y2="155" stroke="currentColor" stroke-width="1.4"/>
+                <line x1="284" y1="161" x2="316" y2="161" stroke="currentColor" stroke-width="1.4"/>
+                <line x1="284" y1="167" x2="316" y2="167" stroke="currentColor" stroke-width="1.4"/>
+                <polygon points="284,155 280,153 280,157" fill="currentColor"/>
+                <polygon points="316,161 320,159 320,163" fill="currentColor"/>
+                <polygon points="284,167 280,165 280,169" fill="currentColor"/>
+              </g>
             </g>
             <text class="topo-label" x="300" y="198">DIST-SW-02</text>
 
-            <g><rect class="topo-node-bg" x="40"  y="244" width="40" height="32" rx="4"/>
-               <rect x="50" y="252" width="20" height="14" fill="none" stroke="#6b7280" stroke-width="1.2"/>
-               <line x1="55" y1="270" x2="65" y2="270" stroke="#6b7280" stroke-width="1.2"/></g>
-            <text class="topo-label" x="60"  y="290" style="font-size:8px;">VLAN-10</text>
+            <g style="color: var(--text-mute);">
+              <rect class="topo-node-bg" x="40"  y="244" width="40" height="32" rx="4"/>
+              <rect x="50" y="252" width="20" height="14" fill="none" stroke="currentColor" stroke-width="1.2"/>
+              <line x1="55" y1="270" x2="65" y2="270" stroke="currentColor" stroke-width="1.2"/>
+            </g>
+            <text class="topo-label" x="60" y="290" style="font-size:8px;">VLAN-10</text>
 
-            <g><rect class="topo-node-bg" x="140" y="244" width="40" height="32" rx="4"/>
-               <rect x="150" y="252" width="20" height="14" fill="none" stroke="#6b7280" stroke-width="1.2"/>
-               <line x1="155" y1="270" x2="165" y2="270" stroke="#6b7280" stroke-width="1.2"/></g>
+            <g style="color: var(--text-mute);">
+              <rect class="topo-node-bg" x="140" y="244" width="40" height="32" rx="4"/>
+              <rect x="150" y="252" width="20" height="14" fill="none" stroke="currentColor" stroke-width="1.2"/>
+              <line x1="155" y1="270" x2="165" y2="270" stroke="currentColor" stroke-width="1.2"/>
+            </g>
             <text class="topo-label" x="160" y="290" style="font-size:8px;">VLAN-20</text>
 
-            <g><rect class="topo-node-bg" x="220" y="244" width="40" height="32" rx="4"/>
-               <rect x="230" y="252" width="20" height="14" fill="none" stroke="#6b7280" stroke-width="1.2"/>
-               <line x1="235" y1="270" x2="245" y2="270" stroke="#6b7280" stroke-width="1.2"/></g>
+            <g style="color: var(--text-mute);">
+              <rect class="topo-node-bg" x="220" y="244" width="40" height="32" rx="4"/>
+              <rect x="230" y="252" width="20" height="14" fill="none" stroke="currentColor" stroke-width="1.2"/>
+              <line x1="235" y1="270" x2="245" y2="270" stroke="currentColor" stroke-width="1.2"/>
+            </g>
             <text class="topo-label" x="240" y="290" style="font-size:8px;">VLAN-30</text>
 
-            <g><rect class="topo-node-bg" x="320" y="244" width="40" height="32" rx="4"/>
-               <rect x="330" y="252" width="20" height="14" fill="none" stroke="#6b7280" stroke-width="1.2"/>
-               <line x1="335" y1="270" x2="345" y2="270" stroke="#6b7280" stroke-width="1.2"/></g>
+            <g style="color: var(--text-mute);">
+              <rect class="topo-node-bg" x="320" y="244" width="40" height="32" rx="4"/>
+              <rect x="330" y="252" width="20" height="14" fill="none" stroke="currentColor" stroke-width="1.2"/>
+              <line x1="335" y1="270" x2="345" y2="270" stroke="currentColor" stroke-width="1.2"/>
+            </g>
             <text class="topo-label" x="340" y="290" style="font-size:8px;">VLAN-40</text>
 
-            <text x="12" y="20" class="topo-label" style="text-anchor:start; font-size:9px; fill:#5d6677;">192.168.0.0/16 · OSPF area 0</text>
-            <circle cx="388" cy="16" r="3" fill="#00ff88"><animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/></circle>
+            <text x="12" y="20" class="topo-label" style="text-anchor:start; font-size:9px; opacity:0.6;">192.168.0.0/16 / OSPF area 0</text>
+            <circle cx="388" cy="16" r="3" fill="currentColor" style="color: var(--green);"><animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/></circle>
           </svg>
         </div>
       </div>
@@ -722,7 +854,7 @@
     </div>
   </section>
 
-  <!-- LABS - COMPACT 2-COL EXPANDABLE -->
+  <!-- LABS -->
   <section id="labs" class="block reveal">
     <div class="container">
       <div class="section-head">
@@ -732,13 +864,10 @@
 
       <div class="labs-grid">
 
-        <!-- LAB 1 -->
         <details class="lab">
           <summary class="lab-summary">
             <div class="lab-summary-head">
-              <div>
-                <div class="lab-num">LAB_01</div>
-              </div>
+              <div><div class="lab-num">LAB_01</div></div>
               <div class="lab-toggle"></div>
             </div>
             <h3>Enterprise Network Segmentation with VLANs and ACLs</h3>
@@ -747,48 +876,38 @@
               <span class="t">Cisco IOS</span><span class="t">VLANs</span><span class="t">ACLs</span><span class="t">DHCP</span>
             </div>
           </summary>
-
           <div class="lab-detail">
             <h4>The business problem</h4>
-            <p>A growing business runs its entire office on one flat network. The guest Wi-Fi, the accounting workstations, and the office phones all share the same broadcast domain. The network slows down at peak hours, guests can technically reach internal file shares, and there’s no way to enforce who can talk to what without buying more hardware.</p>
-
+            <p>A growing business runs its entire office on one flat network. The guest Wi-Fi, the accounting workstations, and the office phones all share the same broadcast domain. The network slows down at peak hours, guests can technically reach internal file shares, and there's no way to enforce who can talk to what without buying more hardware.</p>
             <h4>What this solves</h4>
-            <p>I redesign the network with VLAN segmentation so each department gets its own isolated subnet, inter-VLAN routing for controlled communication between them, and ACLs that enforce who can reach what. Guest devices are completely cut off from internal systems. Voice traffic gets its own VLAN so call quality is protected. Broadcasts stay contained inside each VLAN, so a single noisy device can’t slow the whole office down. The result: better performance, real security boundaries, and a network that scales as the team grows - without replacing equipment.</p>
+            <p>I redesign the network with VLAN segmentation so each department gets its own isolated subnet, inter-VLAN routing for controlled communication between them, and ACLs that enforce who can reach what. Guest devices are completely cut off from internal systems. Voice traffic gets its own VLAN so call quality is protected. Broadcasts stay contained inside each VLAN, so a single noisy device can't slow the whole office down. The result: better performance, real security boundaries, and a network that scales as the team grows, without replacing equipment.</p>
           </div>
         </details>
 
-        <!-- LAB 2 -->
         <details class="lab">
           <summary class="lab-summary">
             <div class="lab-summary-head">
-              <div>
-                <div class="lab-num">LAB_02</div>
-              </div>
+              <div><div class="lab-num">LAB_02</div></div>
               <div class="lab-toggle"></div>
             </div>
             <h3>Dynamic Routing with OSPF Across Multi-Site Infrastructure</h3>
-            <p class="lab-tagline">Connecting multiple offices with automatic failover, so a single dropped link doesn’t take down the business.</p>
+            <p class="lab-tagline">Connecting multiple offices with automatic failover, so a single dropped link doesn't take down the business.</p>
             <div class="lab-tech-mini">
               <span class="t">Cisco IOS</span><span class="t">OSPF</span><span class="t">Area 0</span><span class="t">Failover</span>
             </div>
           </summary>
-
           <div class="lab-detail">
             <h4>The business problem</h4>
-            <p>A company with two or more offices is connecting them with static routes that someone has to update manually every time a subnet is added. When a link goes down, traffic stops - someone has to log into a router and reroute it by hand. Outages turn into 30-minute downtime windows. Adding a new site means touching every router.</p>
-
+            <p>A company with two or more offices is connecting them with static routes that someone has to update manually every time a subnet is added. When a link goes down, traffic stops, someone has to log into a router and reroute it by hand. Outages turn into 30-minute downtime windows. Adding a new site means touching every router.</p>
             <h4>What this solves</h4>
-            <p>I deploy OSPF across the sites so the routers learn the network automatically and update each other when anything changes. When the primary link to a site fails, traffic reroutes through the backup path in seconds with no human intervention. New subnets propagate themselves - add a network at one site and every router knows about it. The business gets a self-healing WAN: fewer outages, faster recovery, and no manual route maintenance as the company adds locations.</p>
+            <p>I deploy OSPF across the sites so the routers learn the network automatically and update each other when anything changes. When the primary link to a site fails, traffic reroutes through the backup path in seconds with no human intervention. New subnets propagate themselves, add a network at one site and every router knows about it. The business gets a self-healing WAN: fewer outages, faster recovery, and no manual route maintenance as the company adds locations.</p>
           </div>
         </details>
 
-        <!-- LAB 3 -->
         <details class="lab">
           <summary class="lab-summary">
             <div class="lab-summary-head">
-              <div>
-                <div class="lab-num">LAB_03</div>
-              </div>
+              <div><div class="lab-num">LAB_03</div></div>
               <div class="lab-toggle"></div>
             </div>
             <h3>Perimeter Security and Traffic Control with FortiGate</h3>
@@ -797,23 +916,18 @@
               <span class="t">FortiGate</span><span class="t">NAT</span><span class="t">VPN</span><span class="t">Policies</span>
             </div>
           </summary>
-
           <div class="lab-detail">
             <h4>The business problem</h4>
-            <p>A business is sitting behind a basic ISP router with no real firewall. Internal services they want reachable from outside (a booking portal, a remote-access tool) are either fully exposed to the internet or not reachable at all. The remote branch office connects to head office over the public internet with no encryption. There’s no logging of who tried to reach what.</p>
-
+            <p>A business is sitting behind a basic ISP router with no real firewall. Internal services they want reachable from outside (a booking portal, a remote-access tool) are either fully exposed to the internet or not reachable at all. The remote branch office connects to head office over the public internet with no encryption. There's no logging of who tried to reach what.</p>
             <h4>What this solves</h4>
-            <p>I deploy a FortiGate at the edge with zoned interfaces (WAN, LAN, DMZ) and policy-based control over every flow in and out. Only the specific services that should be reachable from outside are exposed, on the specific ports they need. The remote branch connects to head office over an IPsec VPN tunnel - all traffic encrypted, no public exposure. Every connection is logged, so when something looks wrong there’s an actual record. The business gets a real security perimeter and compliance-grade visibility, instead of relying on hope.</p>
+            <p>I deploy a FortiGate at the edge with zoned interfaces (WAN, LAN, DMZ) and policy-based control over every flow in and out. Only the specific services that should be reachable from outside are exposed, on the specific ports they need. The remote branch connects to head office over an IPsec VPN tunnel, all traffic encrypted, no public exposure. Every connection is logged, so when something looks wrong there's an actual record. The business gets a real security perimeter and compliance-grade visibility, instead of relying on hope.</p>
           </div>
         </details>
 
-        <!-- LAB 4 -->
         <details class="lab">
           <summary class="lab-summary">
             <div class="lab-summary-head">
-              <div>
-                <div class="lab-num">LAB_04</div>
-              </div>
+              <div><div class="lab-num">LAB_04</div></div>
               <div class="lab-toggle"></div>
             </div>
             <h3>Secure Wireless Infrastructure Deployment</h3>
@@ -822,23 +936,18 @@
               <span class="t">APs</span><span class="t">SSID</span><span class="t">WPA2/WPA3</span><span class="t">Roaming</span>
             </div>
           </summary>
-
           <div class="lab-detail">
             <h4>The business problem</h4>
-            <p>A multi-room office or facility has a single consumer-grade access point in one corner. Coverage is patchy - staff lose connection walking between rooms, video calls drop. Visitors are given the same Wi-Fi password as staff, which means guest devices end up on the same network as internal servers and printers. The password gets shared around and never changed.</p>
-
+            <p>A multi-room office or facility has a single consumer-grade access point in one corner. Coverage is patchy, staff lose connection walking between rooms, video calls drop. Visitors are given the same Wi-Fi password as staff, which means guest devices end up on the same network as internal servers and printers. The password gets shared around and never changed.</p>
             <h4>What this solves</h4>
-            <p>I deploy multiple controller-managed access points covering the whole space, with a separate SSID for staff and a separate SSID for guests - each tagged to its own VLAN. Staff stay connected as they move because the APs hand them off seamlessly (802.11r fast-roaming). Guests get internet access through a captive portal but cannot reach anything internal. Modern WPA3 encryption is used where supported, with WPA2 fallback for older devices. The business gets reliable coverage, a clean separation between staff and visitor traffic, and no more shared-password problem.</p>
+            <p>I deploy multiple controller-managed access points covering the whole space, with a separate SSID for staff and a separate SSID for guests, each tagged to its own VLAN. Staff stay connected as they move because the APs hand them off seamlessly (802.11r fast-roaming). Guests get internet access through a captive portal but cannot reach anything internal. Modern WPA3 encryption is used where supported, with WPA2 fallback for older devices. The business gets reliable coverage, a clean separation between staff and visitor traffic, and no more shared-password problem.</p>
           </div>
         </details>
 
-        <!-- LAB 5 -->
         <details class="lab">
           <summary class="lab-summary">
             <div class="lab-summary-head">
-              <div>
-                <div class="lab-num">LAB_05</div>
-              </div>
+              <div><div class="lab-num">LAB_05</div></div>
               <div class="lab-toggle"></div>
             </div>
             <h3>VoIP Infrastructure and Voice VLAN Configuration</h3>
@@ -847,23 +956,19 @@
               <span class="t">Grandstream</span><span class="t">SIP</span><span class="t">Voice VLAN</span><span class="t">QoS</span>
             </div>
           </summary>
-
           <div class="lab-detail">
             <h4>The business problem</h4>
-            <p>A business is paying for traditional phone lines that are expensive and inflexible. Adding a new extension means calling the phone company and waiting a week. There’s no IVR, no ring groups, no way to route calls intelligently. When someone in the office starts a large file transfer or backup, voice calls go choppy because data and voice are sharing the same network with no prioritization.</p>
-
+            <p>A business is paying for traditional phone lines that are expensive and inflexible. Adding a new extension means calling the phone company and waiting a week. There's no IVR, no ring groups, no way to route calls intelligently. When someone in the office starts a large file transfer or backup, voice calls go choppy because data and voice are sharing the same network with no prioritization.</p>
             <h4>What this solves</h4>
-            <p>I deploy an on-premises PBX with SIP extensions, an IVR for inbound call routing, and ring groups so calls can hunt across teams. The PBX connects to the outside world through SIP trunking or existing FXO lines - whichever fits the budget. Voice traffic gets its own dedicated VLAN, and QoS is configured on the switches so voice packets always take priority over data. The business gets a modern phone system at a fraction of the cost, with call quality that holds steady even when the network is busy.</p>
+            <p>I deploy an on-premises PBX with SIP extensions, an IVR for inbound call routing, and ring groups so calls can hunt across teams. The PBX connects to the outside world through SIP trunking or existing FXO lines, whichever fits the budget. Voice traffic gets its own dedicated VLAN, and QoS is configured on the switches so voice packets always take priority over data. The business gets a modern phone system at a fraction of the cost, with call quality that holds steady even when the network is busy.</p>
           </div>
         </details>
-
-
 
       </div>
     </div>
   </section>
 
-  <!-- ROADMAP -->
+  <!-- QUALIFICATIONS -->
   <section id="roadmap" class="block reveal">
     <div class="container">
       <div class="section-head">
@@ -872,27 +977,27 @@
       </div>
       <div class="roadmap">
         <div class="road-step done">
-          <div class="status">● COMPLETED</div>
+          <div class="status">[*] COMPLETED</div>
           <div class="name">BSc Computer Networking &amp; Security</div>
-          <div class="desc">UTech · 2026</div>
+          <div class="desc">UTech / 2026</div>
         </div>
         <div class="road-step done">
-          <div class="status">● COMPLETED</div>
+          <div class="status">[*] COMPLETED</div>
           <div class="name">Fortinet Certified Fundamentals</div>
           <div class="desc">Cybersecurity</div>
         </div>
         <div class="road-step wip">
-          <div class="status">◐ IN PROGRESS</div>
+          <div class="status">[~] IN PROGRESS</div>
           <div class="name">Cisco CCNA</div>
           <div class="desc">200-301</div>
         </div>
         <div class="road-step next">
-          <div class="status">▷ PLANNED</div>
+          <div class="status">[&gt;] PLANNED</div>
           <div class="name">CCNP Enterprise</div>
           <div class="desc">After CCNA</div>
         </div>
         <div class="road-step next">
-          <div class="status">▷ PLANNED</div>
+          <div class="status">[&gt;] PLANNED</div>
           <div class="name">CCNP Security</div>
           <div class="desc">Specialization track</div>
         </div>
@@ -900,7 +1005,7 @@
     </div>
   </section>
 
-  <!-- TECH STACK - LOGO GRID -->
+  <!-- TECH STACK -->
   <section id="stack" class="block reveal">
     <div class="container">
       <div class="section-head">
@@ -912,33 +1017,15 @@
         <h3>Networking</h3>
         <div class="logo-grid">
           <div class="logo-card">
-            <svg viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-              <text x="100" y="38" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="22" fill="currentColor">CISCO</text>
-              <g fill="currentColor">
-                <rect x="30"  y="22" width="3" height="18"/>
-                <rect x="38"  y="14" width="3" height="26"/>
-                <rect x="46"  y="6"  width="3" height="34"/>
-                <rect x="54"  y="14" width="3" height="26"/>
-                <rect x="62"  y="22" width="3" height="18"/>
-              </g>
-              <g fill="currentColor" transform="translate(108,0)">
-                <rect x="30"  y="22" width="3" height="18"/>
-                <rect x="38"  y="14" width="3" height="26"/>
-                <rect x="46"  y="6"  width="3" height="34"/>
-                <rect x="54"  y="14" width="3" height="26"/>
-                <rect x="62"  y="22" width="3" height="18"/>
-              </g>
-            </svg>
+            <div class="logo-text">CISCO</div>
             <div class="logo-name">Cisco IOS</div>
           </div>
-
           <div class="logo-card">
             <div class="logo-text">HUAWEI</div>
             <div class="logo-name">VRP</div>
           </div>
-
           <div class="logo-card">
-            <div class="logo-text" style="color:#0559C9;">ubiquiti</div>
+            <div class="logo-text">ubiquiti</div>
             <div class="logo-name">UniFi / EdgeOS</div>
           </div>
         </div>
@@ -948,7 +1035,7 @@
         <h3>Security</h3>
         <div class="logo-grid">
           <div class="logo-card">
-            <div class="logo-text" style="color:#EE3124;">FE&#x29F8;RTINET</div>
+            <div class="logo-text">FE&#x29F8;RTINET</div>
             <div class="logo-name">FortiGate</div>
           </div>
           <div class="logo-card">
@@ -966,7 +1053,7 @@
         <h3>Infrastructure</h3>
         <div class="logo-grid">
           <div class="logo-card">
-            <div class="logo-text" style="color:#607078;">vm<span style="color:#00d9ff;">ware</span></div>
+            <div class="logo-text">vmware</div>
             <div class="logo-name">Virtualization</div>
           </div>
           <div class="logo-card">
@@ -1012,7 +1099,7 @@
         <h2 class="section-title">About.</h2>
       </div>
       <div class="about-wrap">
-        <p>I'm a network engineer based in <strong>Kingston, Jamaica</strong> focused on enterprise networking, infrastructure, and security. I build, troubleshoot, and secure routing, switching, firewall, wireless, and VoIP environments.</p>
+        <p>I'm a network engineer based in <strong>Kingston, Jamaica</strong> focused on enterprise networking, infrastructure, and security. I build, troubleshoot, and secure routing, switching, firewall, wireless, and VoIP environments. <strong>BSc in Computer Networking and Security</strong> from the University of Technology, Jamaica (May 2026).</p>
       </div>
     </div>
   </section>
@@ -1043,7 +1130,7 @@
           <li><span class="k">Email</span><span class="v"><a href="mailto:contact@waynecurrie.net">contact@waynecurrie.net</a></span></li>
           <li><span class="k">Location</span><span class="v">Kingston, Jamaica</span></li>
           <li><span class="k">GitHub</span><span class="v"><a href="https://github.com/waynecurrienet" target="_blank" rel="noopener">@waynecurrienet</a></span></li>
-          <li><span class="k">LinkedIn</span><span class="v"><a href="https://www.linkedin.com/in/wayne-currie" target="_blank" rel="noopener">/in/waynecurrie</a></span></li>
+          <li><span class="k">LinkedIn</span><span class="v"><a href="https://www.linkedin.com/in/waynecurrie" target="_blank" rel="noopener">/in/waynecurrie</a></span></li>
           <li><span class="k">Resume</span><span class="v"><a href="cv.pdf" download>Download CV</a></span></li>
         </ul>
       </div>
@@ -1052,11 +1139,11 @@
 
   <footer>
     <div class="container">
-      <div class="l">&copy; 2026 Wayne Currie </div>
+      <div class="l">(c) 2026 Wayne Currie</div>
+      
     </div>
   </footer>
 
-  <!-- BACK TO TOP -->
   <button class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="18 15 12 9 6 15"></polyline>
@@ -1064,10 +1151,13 @@
   </button>
 
   <script>
+    // Topbar shadow on scroll
     const topbar = document.getElementById('topbar');
     window.addEventListener('scroll', () => {
       topbar.classList.toggle('scrolled', window.scrollY > 40);
     });
+
+    // Reveal on scroll
     const reveals = document.querySelectorAll('.reveal');
     const obs = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
@@ -1079,20 +1169,41 @@
     }, { threshold: 0.1 });
     reveals.forEach((r) => obs.observe(r));
 
-    
+    // Lab card open state
     document.querySelectorAll('details.lab').forEach((d) => {
       d.addEventListener('toggle', () => {
         d.classList.toggle('open', d.open);
       });
     });
 
-    // Back-to-top button
+    // Back-to-top
     const backToTop = document.getElementById('backToTop');
     window.addEventListener('scroll', () => {
       backToTop.classList.toggle('visible', window.scrollY > 400);
     });
     backToTop.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+
+    // Mobile menu
+    const menuToggle = document.getElementById('menuToggle');
+    menuToggle.addEventListener('click', () => {
+      document.body.classList.toggle('menu-open');
+    });
+    // Close mobile menu when a nav link is clicked
+    document.querySelectorAll('.nav-links a').forEach((a) => {
+      a.addEventListener('click', () => {
+        document.body.classList.remove('menu-open');
+      });
     });
   </script>
 
